@@ -10,41 +10,39 @@ interface AuthScreenProps {
 }
 
 export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthenticated }) => {
-  const [customerName, setCustomerName] = useState('');
-  const [isValidating, setIsValidating] = useState(false);
+  const [customerMobile, setCustomerMobile] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!customerName.trim()) {
+    if (!customerMobile) {
       toast({
-        title: "Name Required",
-        description: "Please enter the customer name to continue.",
-        variant: "destructive"
+        title: "Mobile Number Required",
+        description: "Please enter the customer mobile number to continue.",
+        variant: "destructive",
       });
       return;
     }
 
-    setIsValidating(true);
-    
-    // Simulate validation delay
+    // Validate as 10-digit number
+    const mobileRegex = /^\d{10}$/;
+    setIsLoading(true);
     setTimeout(() => {
-      // Accept any non-empty customer name (at least 2 characters)
-      if (customerName.trim().length >= 2) {
-        onAuthenticated(customerName);
+      if (mobileRegex.test(customerMobile)) {
+        onAuthenticated(customerMobile);
         toast({
           title: "Access Granted",
           description: "Welcome to customer photo system.",
-          variant: "default"
+          variant: "default",
         });
       } else {
         toast({
-          title: "Invalid Name",
-          description: "Please enter a valid customer name and try again.",
-          variant: "destructive"
+          title: "Invalid Mobile Number",
+          description: "Please enter a valid 10-digit mobile number and try again.",
+          variant: "destructive",
         });
       }
-      setIsValidating(false);
+      setIsLoading(false);
     }, 1500);
   };
 
@@ -65,19 +63,19 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthenticated }) => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label htmlFor="customer-name" className="text-sm font-medium text-foreground">
-              Customer Name
+            <label htmlFor="customer-mobile" className="text-foreground">
+              Customer Mobile Number
             </label>
             <div className="relative">
               <KeyRound className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                id="customer-name"
-                type="text"
-                placeholder="Enter customer name"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
+                id="customer-mobile"
+                type="tel"
+                placeholder="Enter customer mobile number"
+                value={customerMobile}
+                onChange={(e) => setCustomerMobile(e.target.value)}
                 className="pl-10"
-                disabled={isValidating}
+                disabled={isLoading}
                 autoComplete="off"
               />
             </div>
@@ -88,9 +86,9 @@ export const AuthScreen: React.FC<AuthScreenProps> = ({ onAuthenticated }) => {
             variant="primary" 
             size="lg" 
             className="w-full"
-            disabled={isValidating}
+            disabled={isLoading}
           >
-            {isValidating ? (
+            {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground mr-2" />
                 Validating...

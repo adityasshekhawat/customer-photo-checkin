@@ -1,26 +1,28 @@
 import React, { useState } from 'react';
-import { AuthScreen } from '@/components/auth-screen';
-import { VerificationApp } from '@/components/verification-app';
+import { AuthScreen } from '../components/auth-screen';
+import { VerificationApp } from '../components/verification-app';
 
-const Index = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [customerName, setCustomerName] = useState('');
-
-  const handleAuthenticated = (name: string) => {
-    setCustomerName(name);
-    setIsAuthenticated(true);
+const IndexPage: React.FC = () => {
+  const [customerMobile, setCustomerMobile] = useState('');
+  
+  const handleAuthenticated = (mobile: string) => {
+    setCustomerMobile(mobile);
   };
-
+  
   const handleLogout = () => {
-    setCustomerName('');
-    setIsAuthenticated(false);
+    // Clear user state on logout
+    setCustomerMobile('');
   };
-
-  if (!isAuthenticated) {
-    return <AuthScreen onAuthenticated={handleAuthenticated} />;
-  }
-
-  return <VerificationApp userCode={customerName} onLogout={handleLogout} />;
+  
+  return (
+    <div className="min-h-screen bg-gradient-background">
+      {!customerMobile ? (
+        <AuthScreen onAuthenticated={handleAuthenticated} />
+      ) : (
+        <VerificationApp userCode={customerMobile} onLogout={handleLogout} />
+      )}
+    </div>
+  );
 };
 
-export default Index;
+export default IndexPage;

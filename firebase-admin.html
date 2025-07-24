@@ -639,7 +639,7 @@
             <div class="controls-grid">
                 <div class="control-group">
                     <label for="userSearch">Search Users</label>
-                    <input type="text" id="userSearch" class="search-input" placeholder="Search by customer name...">
+                    <input type="text" id="userSearch" class="search-input" placeholder="Search by customer mobile...">
                 </div>
                 <div class="control-group">
                     <label for="timeFilter">Time Filter</label>
@@ -931,7 +931,7 @@
                 return;
             }
 
-            const headers = ['Customer Name', 'Submission ID', 'Latitude', 'Longitude', 'Accuracy', 'Timestamp', 'Image URL'];
+            const headers = ['Customer Mobile', 'Submission ID', 'Latitude', 'Longitude', 'Accuracy', 'Timestamp', 'Image URL'];
             const csvContent = [
                 headers.join(','),
                 ...filteredCheckins.map(checkin => [
