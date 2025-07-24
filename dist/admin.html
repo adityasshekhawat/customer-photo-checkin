@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Detection - Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b6b, #ffa726);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            box-shadow: 0 4px 16px rgba(255, 107, 107, 0.3);
+        }
+
+        .header-text h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-text p {
+            color: #6b7280;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .status-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        .last-updated {
+            color: #6b7280;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.total { --accent-color: linear-gradient(135deg, #6366f1, #8b5cf6); }
+        .stat-card.users { --accent-color: linear-gradient(135deg, #10b981, #059669); }
+        .stat-card.today { --accent-color: linear-gradient(135deg, #f59e0b, #d97706); }
+        .stat-card.week { --accent-color: linear-gradient(135deg, #ef4444, #dc2626); }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+            background: var(--accent-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Controls */
+        .controls {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .control-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .search-input, .filter-select {
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            background: white;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .search-input:focus, .filter-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Data Section */
+        .data-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-subtitle {
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Check-ins Grid */
+        .checkins-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .checkin-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border: 1px solid #f3f4f6;
+            transition: all 0.3s ease;
+        }
+
+        .checkin-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .checkin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 3px solid #e5e7eb;
+            transition: all 0.2s ease;
+        }
+
+        .user-avatar:hover {
+            border-color: #6366f1;
+            transform: scale(1.05);
+        }
+
+        .user-details h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 0.25rem;
+        }
+
+        .user-details p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .checkin-timestamp {
+            text-align: right;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        .location-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: #f9fafb;
+            border-radius: 12px;
+            border-left: 4px solid #6366f1;
+        }
+
+        .location-coords {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        .checkin-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .action-btn.view {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #dbeafe;
+        }
+
+        .action-btn.view:hover {
+            background: #dbeafe;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.map {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #dcfce7;
+        }
+
+        .action-btn.map:hover {
+            background: #dcfce7;
+            transform: translateY(-1px);
+        }
+
+        .action-btn.download {
+            background: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+
+        .action-btn.download:hover {
+            background: #fde68a;
+            transform: translateY(-1px);
+        }
+
+        /* Loading States */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            color: #6b7280;
+        }
+
+        .spinner {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #e5e7eb;
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #6b7280;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .modal img {
+            width: 100%;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .checkin-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .checkin-actions {
+                flex-wrap: wrap;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">
+                        <i class="fas fa-location-dot"></i>
+                    </div>
+                    <div class="header-text">
+                        <h1>Customer Photo System</h1>
+                        <p>Real-time monitoring dashboard for customer photos</p>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <div class="status-badge">
+                        <i class="fas fa-circle"></i>
+                        100% FREE FOREVER
+                    </div>
+                    <div class="last-updated">
+                        <i class="fas fa-clock"></i>
+                        <span id="lastUpdated">Last updated: --:--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card total">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="totalCheckins">0</div>
+                <div class="stat-label">Total Photos</div>
+            </div>
+            <div class="stat-card users">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="uniqueUsers">0</div>
+                <div class="stat-label">Unique Customers</div>
+            </div>
+            <div class="stat-card today">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="todayCheckins">0</div>
+                <div class="stat-label">Today's Photos</div>
+            </div>
+            <div class="stat-card week">
+                <div class="stat-header">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-week"></i>
+                    </div>
+                </div>
+                <div class="stat-value" id="thisWeekCheckins">0</div>
+                <div class="stat-label">This Week</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="userSearch">Search Users</label>
+                    <input type="text" id="userSearch" class="search-input" placeholder="Search by customer mobile...">
+                </div>
+                <div class="control-group">
+                    <label for="timeFilter">Time Filter</label>
+                    <select id="timeFilter" class="filter-select">
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="loadData()">
+                    <i class="fas fa-sync-alt"></i>
+                    Refresh
+                </button>
+                <button class="btn btn-secondary" onclick="exportToCSV()">
+                    <i class="fas fa-download"></i>
+                    Export CSV
+                </button>
+            </div>
+        </div>
+
+        <!-- Data Section -->
+        <div class="data-section">
+            <div class="section-header">
+                <div>
+                    <div class="section-title">
+                        <i class="fas fa-fire"></i>
+                        Live Check-ins from Firebase
+                    </div>
+                    <div class="section-subtitle" id="showingCount">Loading...</div>
+                </div>
+            </div>
+
+            <div id="loadingIndicator" class="loading">
+                <div class="spinner"></div>
+                <span>Loading check-ins from Firebase...</span>
+            </div>
+
+            <div id="checkinsContainer" class="checkins-grid"></div>
+
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <i class="fas fa-camera"></i>
+                <h3>No Check-ins Yet</h3>
+                <p>Check-ins will appear here once users start submitting selfies</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>User Selfie</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <img id="modalImage" src="" alt="User selfie">
+            <div id="modalInfo"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js';
+        import { getFirestore, collection, getDocs, query, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js';
+        
+        // 🔥 Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMXux-UQ8tJs0Cjc_cs5Cv7kA8dY5YxkA",
+            authDomain: "location-detection-jt.firebaseapp.com",
+            projectId: "location-detection-jt",
+            storageBucket: "location-detection-jt.firebasestorage.app",
+            messagingSenderId: "944485836400",
+            appId: "1:944485836400:web:9c50554a72f34b7c8476b5",
+            measurementId: "G-8LL4W6D6M8"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let allCheckins = [];
+        let filteredCheckins = [];
+
+        // Load data from Firebase
+        async function loadData() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const checkinsContainer = document.getElementById('checkinsContainer');
+            const emptyState = document.getElementById('emptyState');
+            
+            loadingIndicator.style.display = 'flex';
+            checkinsContainer.innerHTML = '';
+            emptyState.style.display = 'none';
+
+            try {
+                console.log('🔥 Loading data from Firebase...');
+                const q = query(collection(db, 'store-checkins'), orderBy('createdAt', 'desc'));
+                const querySnapshot = await getDocs(q);
+                
+                allCheckins = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+
+                console.log(`✅ Loaded ${allCheckins.length} check-ins`);
+                
+                // Update stats
+                updateStats();
+                
+                // Apply current filters
+                applyFilters();
+                
+                // Update last updated time
+                document.getElementById('lastUpdated').textContent = 
+                    `Last updated: ${new Date().toLocaleTimeString()}`;
+
+            } catch (error) {
+                console.error('❌ Error loading data:', error);
+                checkinsContainer.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #ef4444;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <h3>Error Loading Data</h3>
+                        <p>Failed to connect to Firebase. Please check your configuration.</p>
+                        <p style="font-size: 0.875rem; margin-top: 1rem; color: #6b7280;">Error: ${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        }
+
+        // Update statistics
+        function updateStats() {
+            const total = allCheckins.length;
+            const unique = new Set(allCheckins.map(c => c.userCode)).size;
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+
+            const todayCount = allCheckins.filter(c => {
+                const checkinDate = new Date(c.timestamp);
+                return checkinDate >= today;
+            }).length;
+            
+            const weekCount = allCheckins.filter(c => {
+                const checkinDate = new Date(c.timestamp);
+                return checkinDate >= weekAgo;
+            }).length;
+
+            // Animate numbers
+            animateNumber('totalCheckins', total);
+            animateNumber('uniqueUsers', unique);
+            animateNumber('todayCheckins', todayCount);
+            animateNumber('thisWeekCheckins', weekCount);
+        }
+
+        // Animate number changes
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            const currentText = element.textContent;
+            const currentValue = currentText === '--' || currentText === '-' || isNaN(parseInt(currentText)) ? 0 : parseInt(currentText);
+            
+            // If values are the same, just set it directly
+            if (currentValue === targetValue) {
+                element.textContent = targetValue;
+                return;
+            }
+            
+            const increment = targetValue > currentValue ? 1 : -1;
+            let current = currentValue;
+
+            const timer = setInterval(() => {
+                current += increment;
+                element.textContent = current;
+                
+                // Stop when we reach the target
+                if (current === targetValue) {
+                    clearInterval(timer);
+                }
+            }, 30);
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const userSearch = document.getElementById('userSearch').value.toLowerCase();
+            const timeFilter = document.getElementById('timeFilter').value;
+            
+            filteredCheckins = allCheckins.filter(checkin => {
+                // User search filter
+                if (userSearch && !checkin.userCode.toLowerCase().includes(userSearch)) {
+                    return false;
+                }
+                
+                // Time filter
+                if (timeFilter !== 'all') {
+                    const checkinDate = new Date(checkin.timestamp);
+                    const now = new Date();
+                    
+                    switch (timeFilter) {
+                        case 'today':
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            if (checkinDate < today) return false;
+                            break;
+                        case 'week':
+                            const weekAgo = new Date();
+                            weekAgo.setDate(weekAgo.getDate() - 7);
+                            if (checkinDate < weekAgo) return false;
+                            break;
+                        case 'month':
+                            const monthAgo = new Date();
+                            monthAgo.setMonth(monthAgo.getMonth() - 1);
+                            if (checkinDate < monthAgo) return false;
+                            break;
+                    }
+                }
+                
+                return true;
+            });
+            
+            renderCheckins();
+        }
+
+        // Render check-ins
+        function renderCheckins() {
+            const container = document.getElementById('checkinsContainer');
+            const emptyState = document.getElementById('emptyState');
+            const showingCount = document.getElementById('showingCount');
+            
+            if (filteredCheckins.length === 0) {
+                container.innerHTML = '';
+                emptyState.style.display = 'block';
+                showingCount.textContent = 'No check-ins found';
+                return;
+            }
+            
+            emptyState.style.display = 'none';
+            showingCount.textContent = `Showing ${filteredCheckins.length} of ${allCheckins.length} check-ins`;
+            
+            container.innerHTML = filteredCheckins.map(checkin => `
+                <div class="checkin-card">
+                    <div class="checkin-header">
+                        <div class="user-info">
+                            <img src="${checkin.imageUrl}" alt="${checkin.userCode}" class="user-avatar" 
+                                 onclick="openModal('${checkin.imageUrl}', '${checkin.userCode}', '${checkin.latitude}, ${checkin.longitude}', '${new Date(checkin.timestamp).toLocaleString()}')">
+                            <div class="user-details">
+                                <h3>${checkin.userCode}</h3>
+                                <p>Submission ID: ${checkin.submissionId}</p>
+                            </div>
+                        </div>
+                        <div class="checkin-timestamp">
+                            <div>${new Date(checkin.timestamp).toLocaleDateString()}</div>
+                            <div style="font-weight: 600;">${new Date(checkin.timestamp).toLocaleTimeString()}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="location-info">
+                        <i class="fas fa-map-marker-alt" style="color: #6366f1;"></i>
+                        <span class="location-coords">${checkin.latitude.toFixed(6)}, ${checkin.longitude.toFixed(6)}</span>
+                        <span style="margin-left: auto; font-size: 0.75rem; color: #6b7280;">
+                            ±${checkin.accuracy?.toFixed(0) || 'N/A'}m accuracy
+                        </span>
+                    </div>
+                    
+                    <div class="checkin-actions">
+                        <button class="action-btn view" onclick="openModal('${checkin.imageUrl}', '${checkin.userCode}', '${checkin.latitude}, ${checkin.longitude}', '${new Date(checkin.timestamp).toLocaleString()}')">
+                            <i class="fas fa-eye"></i>
+                            View
+                        </button>
+                        <a href="https://www.google.com/maps?q=${checkin.latitude},${checkin.longitude}" 
+                           target="_blank" class="action-btn map">
+                            <i class="fas fa-map"></i>
+                            Map
+                        </a>
+                        <button class="action-btn download" onclick="downloadImage('${checkin.imageUrl}', '${checkin.userCode}_${checkin.submissionId}')">
+                            <i class="fas fa-download"></i>
+                            Download
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Export to CSV
+        function exportToCSV() {
+            if (filteredCheckins.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            const headers = ['Customer Mobile', 'Submission ID', 'Latitude', 'Longitude', 'Accuracy', 'Timestamp', 'Image URL'];
+            const csvContent = [
+                headers.join(','),
+                ...filteredCheckins.map(checkin => [
+                    checkin.userCode,
+                    checkin.submissionId,
+                    checkin.latitude,
+                    checkin.longitude,
+                    checkin.accuracy || 'N/A',
+                    new Date(checkin.timestamp).toLocaleString(),
+                    checkin.imageUrl
+                ].join(','))
+            ].join('\n');
+
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `customer-photos-${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Modal functions
+        function openModal(imageUrl, userCode, coords, timestamp) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalInfo = document.getElementById('modalInfo');
+            
+            modalImage.src = imageUrl;
+            modalInfo.innerHTML = `
+                <div style="padding: 1rem 0;">
+                    <h4 style="margin-bottom: 0.5rem; color: #1a1a1a;">${userCode}</h4>
+                    <p style="color: #6b7280; margin-bottom: 0.5rem;"><i class="fas fa-map-marker-alt"></i> ${coords}</p>
+                    <p style="color: #6b7280; font-size: 0.875rem;"><i class="fas fa-clock"></i> ${timestamp}</p>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+        }
+
+        // Download image
+        async function downloadImage(url, filename) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = `${filename}.jpg`;
+                a.click();
+                window.URL.revokeObjectURL(downloadUrl);
+            } catch (error) {
+                console.error('Download failed:', error);
+                alert('Failed to download image');
+            }
+        }
+
+        // Event listeners
+        document.getElementById('userSearch').addEventListener('input', applyFilters);
+        document.getElementById('timeFilter').addEventListener('change', applyFilters);
+
+        // Close modal on outside click
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        // Make functions global
+        window.loadData = loadData;
+        window.exportToCSV = exportToCSV;
+        window.openModal = openModal;
+        window.closeModal = closeModal;
+        window.downloadImage = downloadImage;
+
+        // Auto-refresh every 30 seconds
+        setInterval(loadData, 30000);
+
+        // Initial load
+        loadData();
+    </script>
+</body>
+</html> 
