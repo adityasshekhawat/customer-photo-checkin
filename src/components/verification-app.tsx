@@ -238,7 +238,7 @@ export const VerificationApp: React.FC<VerificationAppProps> = ({ userCode, onLo
             <div className="flex-shrink-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center mr-3">
               <span className="text-primary-foreground text-sm font-bold">1</span>
             </div>
-            <h3 className="font-medium text-foreground">Take Your Selfie</h3>
+            <h3 className="font-medium text-foreground">Take store photo</h3>
           </div>
           <CameraCapture 
             onCapture={handleImageCapture} 
